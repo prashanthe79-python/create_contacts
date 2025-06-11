@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from database import SessionLocal, engine, Base
 from models import Contact
 from schemas import ContactCreate
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
@@ -18,6 +20,13 @@ def get_db():
         db.close()
 
 @app.post("/contacts", status_code=201)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://smartshopie.com"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 def create_contact(contact: ContactCreate, db: Session = Depends(get_db)):
     new_contact = Contact(
         first_name=contact.first_name,
